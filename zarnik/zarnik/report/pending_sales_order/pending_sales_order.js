@@ -1,8 +1,8 @@
-// Copyright (c) 2016, Frappe Technologies Pvt. Ltd. and contributors
+// Copyright (c) 2016, Shahzad Naser and contributors
 // For license information, please see license.txt
 /* eslint-disable */
 
-frappe.query_reports["Sales vs Delivery Analysis"] = {
+frappe.query_reports["Pending Sales Order"] = {
 	"filters": [
 		{
 			"fieldname": "company",
@@ -53,19 +53,10 @@ frappe.query_reports["Sales vs Delivery Analysis"] = {
 		{
 			"fieldname": "status",
 			"label": __("Status"),
-			"fieldtype": "MultiSelectList",
+			"fieldtype": "Select",
 			"width": "80",
-			get_data: function(txt) {
-				let status = ["To Bill", "To Deliver", "To Deliver and Bill", "Completed"]
-				let options = []
-				for (let option of status){
-					options.push({
-						"value": option,
-						"description": ""
-					})
-				}
-				return options
-			}
+			"options": '\nTo Bill\nTo Deliver\nTo Deliver and Bill\nCompleted',
+			"default": "To Deliver and Bill"
 		}
 	],
 

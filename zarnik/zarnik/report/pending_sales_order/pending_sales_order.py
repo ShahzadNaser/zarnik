@@ -1,14 +1,9 @@
-# Copyright (c) 2013, Frappe Technologies Pvt. Ltd. and contributors
+# Copyright (c) 2013, Shahzad Naser and contributors
 # For license information, please see license.txt
-
 from __future__ import unicode_literals
-
-import copy
-
 import frappe
 from frappe import _
 from frappe.utils import date_diff, flt, getdate
-
 
 def execute(filters=None):
 	if not filters:
@@ -23,9 +18,9 @@ def execute(filters=None):
 	if not data:
 		return [], [], None, []
 
-	data, chart_data = prepare_data(data, filters)
+	# data, chart_data = prepare_data(data, filters)
 
-	return columns, data, None, chart_data
+	return columns, data
 
 def validate_filters(filters):
 	from_date, to_date = filters.get("from_date"), filters.get("to_date")
@@ -47,7 +42,7 @@ def get_conditions(filters):
 		conditions += " and so.name in %(sales_order)s"
 
 	if filters.get("status"):
-		conditions += " and so.status in %(status)s"
+		conditions += " and so.status = %(status)s"
 
 	return conditions
 
@@ -65,7 +60,8 @@ def get_data(conditions, filters):
 			soi.qty,
    			(soi.qty - soi.delivered_qty) AS pending_qty,
 			DATEDIFF(CURDATE(), soi.delivery_date) as delay_days,
-			soi.delivery_date as delivery_date,
+			IF(so.status in ('Completed','To Bill'), 0, (SELECT delay_days)) as delay,
+   			soi.delivery_date as delivery_date,
 			soi.warehouse as warehouse,
 			(soi.billed_amt * IFNULL(so.conversion_rate, 1)) as billed_amount,
 			(soi.base_amount - (soi.billed_amt * IFNULL(so.conversion_rate, 1))) as pending_amount,
@@ -81,6 +77,7 @@ def get_data(conditions, filters):
 			and so.docstatus = 1
 			{conditions}
 		GROUP BY soi.name
+		HAVING pending_qty>0
 		ORDER BY so.transaction_date ASC
 	""".format(conditions=conditions), filters, as_dict=1)
 
@@ -92,10 +89,10 @@ def prepare_data(data, filters):
 	if filters.get("group_by_so"):
 		sales_order_map = {}
 
-	for row in data:
+	# for row in data:
 		# sum data for chart
-		completed += row["billed_amount"]
-		pending += row["pending_amount"]
+		# completed += row["billed_amount"]
+		# pending += row["pending_amount"]
 
 		# prepare data for report view
 		# row["qty_to_bill"] = flt(row["qty"]) - flt(row["billed_qty"])
@@ -120,7 +117,7 @@ def prepare_data(data, filters):
 		# 		for field in fields:
 		# 			so_row[field] = flt(row[field]) + flt(so_row[field])
 
-	chart_data = prepare_chart_data(pending, completed)
+	# chart_data = prepare_chart_data(pending, completed)
 
 	# if filters.get("group_by_so"):
 	# 	data = []
@@ -128,7 +125,7 @@ def prepare_data(data, filters):
 	# 		data.append(sales_order_map[so])
 	# 	return data, chart_data
 
-	return data, chart_data
+	return data
 
 def prepare_chart_data(pending, completed):
 	labels = ["Amount to Bill", "Billed Amount"]
@@ -177,25 +174,25 @@ def get_columns(filters):
 			"label": _("item Decription"),
 			"fieldname": "idesc",
 			"fieldtype": "data",
-			"width": 120
+			"width": 180
 		},
   		{
 			"label": _("Item Additional Notes"),
 			"fieldname": "ian",
 			"fieldtype": "data",
-			"width": 140
+			"width": 180
 		},
     	{
 			"label": _("Item Status Comments"),
 			"fieldname": "isc",
 			"fieldtype": "data",
-			"width": 140
+			"width": 180
 		},
      	{
 			"label": _("Sales Order Comments"),
 			"fieldname": "soc",
 			"fieldtype": "data",
-			"width": 140
+			"width": 180
 		},
 		{
 			"label": _("Qty"),
