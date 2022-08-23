@@ -67,6 +67,8 @@ def get_data(conditions, filters):
 			DATEDIFF(CURDATE(), soi.delivery_date) as delay_days,
 			soi.delivery_date as delivery_date,
 			soi.warehouse as warehouse,
+			(soi.billed_amt * IFNULL(so.conversion_rate, 1)) as billed_amount,
+			(soi.base_amount - (soi.billed_amt * IFNULL(so.conversion_rate, 1))) as pending_amount,
 			so.company
 		FROM
 			`tabSales Order` so,
@@ -96,9 +98,9 @@ def prepare_data(data, filters):
 		pending += row["pending_amount"]
 
 		# prepare data for report view
-		row["qty_to_bill"] = flt(row["qty"]) - flt(row["billed_qty"])
+		# row["qty_to_bill"] = flt(row["qty"]) - flt(row["billed_qty"])
 
-		row["delay"] = 0 if row["delay"] and row["delay"] < 0 else row["delay"]
+		# row["delay"] = 0 if row["delay"] and row["delay"] < 0 else row["delay"]
 		# if filters.get("group_by_so"):
 		# 	so_name = row["sales_order"]
 
