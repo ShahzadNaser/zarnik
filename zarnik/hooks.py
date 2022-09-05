@@ -89,13 +89,12 @@ app_license = "MIT"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-#	}
-# }
+doc_events = {
+	"Sales Invoice": {
+		"on_submit": "zarnik.events.sales_invoice.on_submit",
+		"on_cancel": "zarnik.events.sales_invoice.on_cancel"
+	}
+}
 
 # Scheduled Tasks
 # ---------------
