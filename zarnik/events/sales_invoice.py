@@ -1,4 +1,5 @@
 import frappe
+from frappe.utils import cint, flt
 
 def on_submit(doc, method):
     add_manufacture_request(doc)
@@ -10,7 +11,11 @@ def add_manufacture_request(doc):
     _invoice = doc.name
     for item in doc.items:
         bom = frappe.db.get_value("BOM", {"item": item.item_code, "is_active": 1, "is_default": 1})
-        if bom:
+        manufacturing_entry_threshold = frappe.db.get_value("Item",item.item_code,"manufacturing_entry_threshold")
+        #frappe.errprint(bom)
+        #frappe.errprint(manufacturing_entry_threshold)
+
+        if bom and manufacturing_entry_threshold and flt(manufacturing_entry_threshold) > flt(item.get("actual_qty") - item.get("qty")):
             doc = frappe.new_doc("Stock Entry")
             doc.stock_entry_type = "Manufacture"
             doc.purpose = "Manufacture"
@@ -25,7 +30,7 @@ def add_manufacture_request(doc):
             doc.flags.ignore_permissions = True
             doc.save()
             doc.submit()
-			
+
 def cancel_se(doc):
     doc_list = frappe.db.get_list("Stock Entry",filters={"docstatus":1,"remarks" : doc.name})
     if doc_list:
