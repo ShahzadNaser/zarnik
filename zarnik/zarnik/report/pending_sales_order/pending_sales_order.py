@@ -51,8 +51,9 @@ def get_data(conditions, filters):
 		SELECT
 			so.name as sales_order,
 			so.status, 
-   			so.customer, 
+   			so.customer_name, 
    			soi.item_code,
+   			soi.item_name,
    			soi.description as idesc,
    			soi.additional_notes as ian,
    			soi.item_comments as isc,
@@ -148,59 +149,53 @@ def get_columns(filters):
 			"fieldname": "sales_order",
 			"fieldtype": "Link",
 			"options": "Sales Order",
-			"width": 160
+			"width": 120
 		},
-  		{
-			"label":_("Status"),
-			"fieldname": "status",
-			"fieldtype": "Data",
-			"width": 130
-		},
+# 		{
+#			"label":_("Status"),
+#			"fieldname": "status",
+#			"fieldtype": "Data",
+#			"width": 130
+#		},
 		{
-			"label": _("Customer"),
-			"fieldname": "customer",
+			"label": _("Customer Name"),
+			"fieldname": "customer_name",
 			"fieldtype": "Link",
 			"options": "Customer",
-			"width": 130
+			"width": 300
 		},
-  		{
-			"label":_("Item Code"),
-			"fieldname": "item_code",
-			"fieldtype": "Link",
-			"options": "Item",
-			"width": 100
-		},
+#  		{
+#			"label":_("Item Code"),
+#			"fieldname": "item_code",
+#			"fieldtype": "Link",
+#			"options": "Item",
+#			"width": 100
+#		},
 		{
-			"label": _("item Decription"),
-			"fieldname": "idesc",
+			"label": _("Item Name"),
+			"fieldname": "item_name",
 			"fieldtype": "data",
-			"width": 180
+			"width": 300
 		},
-  		{
-			"label": _("Item Additional Notes"),
-			"fieldname": "ian",
-			"fieldtype": "data",
-			"width": 180
-		},
-    	{
-			"label": _("Item Status Comments"),
-			"fieldname": "isc",
-			"fieldtype": "data",
-			"width": 180
-		},
-     	{
-			"label": _("Sales Order Comments"),
-			"fieldname": "soc",
-			"fieldtype": "data",
-			"width": 180
-		},
-		{
-			"label": _("Qty"),
-			"fieldname": "qty",
-			"fieldtype": "Float",
-			"width": 120,
-			"convertible": "qty"
-		},
+#  		{
+#			"label": _("Item Additional Notes"),
+#			"fieldname": "ian",
+#			"fieldtype": "data",
+#			"width": 180
+#		},
+#   	{
+#			"label": _("Item Status Comments"),
+#			"fieldname": "isc",
+#			"fieldtype": "data",
+#			"width": 180
+#		},
+#		{
+#			"label": _("Order Qty"),
+#			"fieldname": "qty",
+#			"fieldtype": "Float",
+#			"width": 120,
+#			"convertible": "qty"
+#		},
 		{
 			"label": _("Qty to Deliver"),
 			"fieldname": "pending_qty",
@@ -208,32 +203,39 @@ def get_columns(filters):
 			"width": 120,
 			"convertible": "qty"
 		},
+#		{
+#			"label":_("Delivery Date"),
+#			"fieldname": "delivery_date",
+#			"fieldtype": "Date",
+#			"width": 120
+#		},
 		{
-			"label":_("Delivery Date"),
-			"fieldname": "delivery_date",
-			"fieldtype": "Date",
-			"width": 120
-		},
-		{
-			"label": _("Delay (in Days)"),
+			"label": _("Delay"),
 			"fieldname": "delay",
 			"fieldtype": "Data",
-			"width": 100
+			"width": 80
 		},
-  		{
-			"label": _("Warehouse"),
-			"fieldname": "warehouse",
-			"fieldtype": "Link",
-			"options": "Warehouse",
-			"width": 100
+		{
+			"label": _("Sales Order Comments"),
+			"fieldname": "soc",
+			"fieldtype": "data",
+			"editable": True,
+			"width": 300
 		},
-    	{
-			"label": _("Company"),
-			"fieldname": "company",
-			"fieldtype": "Link",
-			"options": "Company",
-			"width": 100
-		}
+#  		{
+#			"label": _("Warehouse"),
+#			"fieldname": "warehouse",
+#			"fieldtype": "Link",
+#			"options": "Warehouse",
+#			"width": 100
+#		},
+#   	{
+#			"label": _("Company"),
+#			"fieldname": "company",
+#			"fieldtype": "Link",
+#			"options": "Company",
+#			"width": 100
+#		}
 	]
 
 
